@@ -185,7 +185,7 @@ bool Replay::ParseFile(std::ifstream &_replayFile)
 	LZMA::DecompressStreamData(&stream);
 	delete data;
 
-	ParseReplayData(stream.outData, stream.outLen, gameMode);
+	//ParseReplayData(stream.outData, stream.outLen, gameMode);
 
 	return true;
 }
@@ -206,7 +206,7 @@ return modStr;
 }
 */
 
-void Replay::ParseReplayData(unsigned char* _data, size_t _length, char _gamemode)
+void Replay::ParseReplayData(unsigned char* _data)
 {
 	std::string Replaydata = std::string((const char*)_data);
 	osu::TIMING frame;

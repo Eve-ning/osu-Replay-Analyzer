@@ -33,6 +33,8 @@ class Replay
 		bool isBeatmap(std::string* _MD5);
 		bool isGamemode(GAMEMODE _gamemode);
 
+		void ParseReplayData(unsigned char* _data);
+
 	private:
 		enum DATA
 		{
@@ -45,8 +47,8 @@ class Replay
 		std::vector<osu::TIMING> replayStream;
 
 		// Extracted from replay data
-		std::string beatmapMD5;
-		char gameMode;
+		std::string beatmapMD5 = "";
+		char gameMode = 3;
 		int version;
 		std::string player;
 		std::string replayMD5;
@@ -65,16 +67,15 @@ class Replay
 		
 		Mods mod;
 
-		// *.osr file reading
+		// *.osr file reading	
 		bool ParseFile(std::ifstream &_replayFile);
-		void ParseReplayData(unsigned char* _data, size_t _length, char _gamemode);
+		
 		std::string ReadOsuStr(std::ifstream &_replayFile);
 
 		// Data processing
 		void ValidateMods();
 		void ApplyMods();
 
-		int FindFrameAt(long _time);
 
 	private:
 		void ClearReplay();

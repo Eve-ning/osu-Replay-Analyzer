@@ -10,7 +10,6 @@
 
 Play::Play()
 {
-
 	replay = new Replay();
 
 	activeMods = custom;
@@ -26,8 +25,8 @@ Play::~Play()
 	if (beatmap != nullptr)
 		delete beatmap;
 
-	if (replay != nullptr)
-		delete replay;
+	//if (replay != nullptr)
+	//	delete replay;
 
 	if (scoreEngine != nullptr)
 		delete scoreEngine;
