@@ -38,7 +38,7 @@ class Hitobject
 		bool isHitobjectLong();
 
 		int getHitobjectType();
-		long Hitobject::getCloserTime(long _time);
+		long getCloserTime(long _time);
 
 		SliderHitObject* getSlider();
 

@@ -142,20 +142,42 @@ void Analyzer_TapDeviation::AnalyzeMania(Play* _play)
 		recHitobject[key] = OSUMANIA::getNextIndexOnColumn(hitobjects, key, KEYS, -1);
 
 	int numFrames = _play->replay->getNumFrames();
+
+	int evening_loopfix = 0;
+	int evening_holdnum = 0;
+
 	while(true)
 	{
 		for (int key = 0; key < KEYS; key++)
 		{
 			// Check if we are done with going through the objects on the current column. Skip if so
-			if (recHitobject[key] >= hitobjects.size()) continue;
-
+			if (recHitobject[key] >= hitobjects.size()) {
+				continue;
+			}
 			// get update and get prev replay frame
 			prevIFrame[key] = currIFrame[key];
 			osu::TIMING prevFrame = _play->replay->getFrame(prevIFrame[key]);
 
 			// Get the next replay frame on this coloumn
 			osu::TIMING currFrame = _play->replay->getFrame(++currIFrame[key]);
-			if (currIFrame[key] >= _play->replay->getNumFrames()) continue; // skip this column then as we are finished with it
+
+			if (currIFrame[key] >= _play->beatmap->getHitobjects().back()->getTime()) { // Every Ranked map has to be 30s long 
+				if (evening_holdnum == currIFrame[key]) {
+					evening_loopfix++;
+				}
+				else if (evening_holdnum + 1 == currIFrame[key]) {
+					evening_holdnum = currIFrame[key];
+					evening_loopfix++;
+				}
+				else {
+					evening_holdnum = currIFrame[key];
+					evening_loopfix = 0;
+				}
+			}
+
+			if (currIFrame[key] >= _play->replay->getNumFrames()) {
+				continue; // skip this column then as we are finished with it
+			}
 
 			// Determine the press state; Blank, Press, Release, or Hold
 			int pressState;
@@ -233,12 +255,14 @@ void Analyzer_TapDeviation::AnalyzeMania(Play* _play)
 			timing.time = currFrame.time;
 
 			data.push_back(timing);
+
 		}
 
 		// Check if we are done with every column
 		bool done = true;
 		for (int key = 0; key < KEYS; key++)
-			done &= (OSUMANIA::getNextIndexOnColumn(hitobjects, key, KEYS, recHitobject[key]) == OSUMANIA::MANIA_END);
+			done &= (recHitobject[key] == OSUMANIA::MANIA_END || evening_loopfix > 10); 
+
 		if (done) break;
 	}
 
